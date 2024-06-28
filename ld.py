@@ -2,10 +2,17 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import joblib
+import boto3
+import json
+from datetime import datetime
 
 # Load the model and scaler
 scaler = joblib.load('scaler.pkl')
 xgb_model = joblib.load('xgb_model.pkl')
+
+# AWS S3 Configuration
+s3 = boto3.client('s3')
+bucket_name = 'liver-disease-detection-risk'
 
 # Define the Streamlit app
 st.title("Liver Disease Risk Prediction Tool")
@@ -63,6 +70,12 @@ input_data = pd.DataFrame({
 # Ensure feature names match the training data
 input_data_scaled = scaler.transform(input_data)
 
+# Function to convert numpy data types to native Python types
+def convert_to_native_types(obj):
+    if isinstance(obj, np.generic):
+        return obj.item()
+    return obj
+
 # Make prediction
 if st.button("Predict"):
     prediction = xgb_model.predict_proba(input_data_scaled)[:, 1]
@@ -87,6 +100,39 @@ if st.button("Predict"):
         st.write("Your risk of liver disease is moderate. Consider regular check-ups and adopting healthier habits.")
     else:
         st.write("Your risk of liver disease is high. It is recommended to consult with a healthcare professional and take preventive measures.")
+    
+    # Save the input data and prediction to a dictionary
+    data_to_save = {
+        'Age': age,
+        'Gender': gender,
+        'BMI': bmi,
+        'AlcoholConsumption': alcohol_consumption,
+        'Smoking': smoking,
+        'GeneticRisk': genetic_risk,
+        'PhysicalActivity': physical_activity,
+        'Diabetes': diabetes,
+        'Hypertension': hypertension,
+        'LiverFunctionTest': liver_function_test,
+        'PredictedRisk': risk_level,
+        'RiskScore': risk,
+        'Timestamp': datetime.utcnow().isoformat()
+    }
+
+    # Convert the dictionary to JSON serializable types
+    data_to_save = {k: convert_to_native_types(v) for k, v in data_to_save.items()}
+
+    # Convert the dictionary to a JSON string
+    data_json = json.dumps(data_to_save)
+
+    # Define the filename for the S3 object
+    filename = f"user_data_{datetime.utcnow().isoformat()}.json"
+
+    # Upload the JSON data to S3
+    try:
+        s3.put_object(Bucket=bucket_name, Key=filename, Body=data_json)
+        st.write("Data successfully saved to S3.")
+    except Exception as e:
+        st.write(f"An error occurred while saving data to S3: {e}")
 
 # Additional information
 st.write("""

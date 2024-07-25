@@ -1,0 +1,38 @@
+
+With 20000 data: 50/50
+Accuracy: 0.8911764705882353
+Precision: 0.8770053475935828
+Recall: 0.9213483146067416
+F1 Score: 0.8986301369863013
+ROC AUC: 0.8896865029823832
+
+VS 
+
+With 20000 data: 80/20
+Accuracy: 0.879
+Precision: 0.8956367924528302
+Recall: 0.9589646464646465
+F1 Score: 0.926219512195122
+ROC AUC: 0.7667419386169387
+
+Which is better model?
+
+Based on the metrics you've provided, Model 2 (the one with Recall of 0.9589) appears to be better overall. Here's a breakdown of why:
+
+Higher Recall: Recall indicates how well the model identifies true positives. A Recall of 0.959 suggests Model 2 is better at catching the positive cases.
+Similar Precision: Precision reflects the portion of identified positives that are actually true positives. While Model 2 has a slightly lower precision (0.8956) than Model 1 (0.8770), the difference is negligible.
+Higher F1 Score: F1 score is a harmonic mean between Precision and Recall, providing a balanced view of both metrics. A higher F1 score of 0.926 for Model 2 indicates it achieves a better balance between precision and recall.
+Lower ROC AUC: Although ROC AUC is a standard metric for binary classification, it's not definitive here because the curves might intersect. The other metrics suggest Model 2 performs better overall.
+However, the best model choice can depend on the specific context of your problem. Here are some additional considerations:
+
+Cost of False Positives vs False Negatives: If incorrectly classifying positive cases is much more severe than missing positive cases, Model 1 with higher Precision might be preferable.
+Business Needs: Understanding the specific business needs behind the model can help prioritize metrics. For instance, if catching all positive cases is critical, Model 2 with higher Recall might be better.
+It's recommended to visualize the ROC curves for both models to get a better understanding of their performance at different classification thresholds.
+
+
+
+
+share
+
+
+more_vert

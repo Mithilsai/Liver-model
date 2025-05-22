@@ -26,31 +26,27 @@ def main_app():
     ### Enter your health metrics below to assess your risk of developing liver disease.
     """)
 
-    # Function to calculate BMI
-    def calculate_bmi(weight, height):
-        return weight / ((height / 100) ** 2)
-
     # Get user input
-    age = st.number_input("Age (years)", min_value=0, max_value=120, value=30)
+    age = st.number_input("Age (years)", min_value=18, max_value=100, value=30)
     gender = st.selectbox("Gender", ["Male", "Female"])
 
     # Option to calculate BMI
     bmi_choice = st.selectbox("Do you know your BMI?", ["Yes, I know my BMI", "No, help me calculate my BMI"])
     if bmi_choice == "Yes, I know my BMI":
-        bmi = st.number_input("BMI (kg/m²)", min_value=10.0, max_value=50.0, value=25.0)
+        bmi = st.number_input("BMI (kg/m²)", min_value=10.0, max_value=60.0, value=25.0, help="Body Mass Index. Normal range: 18.5-24.9. Calculated as weight (kg) / (height (m))^2.")
     else:
-        weight = st.number_input("Weight (kg)", min_value=30.0, max_value=200.0, value=70.0)
+        weight = st.number_input("Weight (kg)", min_value=20.0, max_value=250.0, value=70.0)
         height = st.number_input("Height (cm)", min_value=100.0, max_value=250.0, value=170.0)
         bmi = calculate_bmi(weight, height)
         st.write(f"Your calculated BMI is: {bmi:.2f} kg/m²")
 
-    alcohol_consumption = st.slider("Alcohol Consumption (units per week)", min_value=0, max_value=100, value=0)
+    alcohol_consumption = st.slider("Alcohol Consumption (units per week)", min_value=0, max_value=100, value=0, help="Estimate units per week (1 unit ≈ 10ml or 8g of pure alcohol).")
     smoking = st.selectbox("Do you smoke?", ["No", "Yes"])
     genetic_risk = st.selectbox("Is there a family history of liver disease?", ["No", "Yes"])
-    physical_activity = st.slider("Physical Activity (hours per week)", min_value=0, max_value=168, value=1)
+    physical_activity = st.slider("Physical Activity (hours per week)", min_value=0, max_value=50, value=1, help="Moderate to vigorous physical activity.")
     diabetes = st.selectbox("Do you have diabetes?", ["No", "Yes"])
     hypertension = st.selectbox("Do you have hypertension?", ["No", "Yes"])
-    liver_function_test = st.number_input("Most recent liver function test result (ALT/AST level)", min_value=0.0, max_value=100.0, value=0.0)
+    liver_function_test = st.number_input("Most recent liver function test result (ALT/AST level)", min_value=0.0, max_value=500.0, value=20.0, help="Enter your latest ALT or AST level (typically in U/L). If unsure, use the higher value or consult your doctor.")
 
     # Convert categorical inputs to numerical values
     gender = 1 if gender == "Male" else 0
@@ -104,14 +100,14 @@ def main_app():
     # Additional information
     st.write("""
     ### What do these terms mean?
-    - **BMI**: Body Mass Index, a measure of body fat based on height and weight.
-    - **Alcohol Consumption**: Amount of alcohol consumed per week.
-    - **Smoking**: Whether the user smokes or not.
-    - **Genetic Risk**: Family history of liver disease.
-    - **Physical Activity**: Hours of physical activity per week.
-    - **Diabetes**: Whether the user has diabetes.
-    - **Hypertension**: Whether the user has high blood pressure.
-    - **Liver Function Test**: A blood test to check how well the liver is working.
+    - **BMI**: Body Mass Index, a measure of body fat based on height and weight. Normal range is typically 18.5-24.9. Note: BMI is a general indicator and may be less accurate for individuals with high muscle mass.
+    - **Alcohol Consumption**: Self-reported average weekly consumption. Standard units vary by region (e.g., a UK unit is ~8g or 10ml of pure alcohol).
+    - **Smoking**: Whether the user currently smokes tobacco products.
+    - **Genetic Risk**: Indicates if there is a known family history of liver disease (e.g., parents, siblings).
+    - **Physical Activity**: Hours of moderate to vigorous physical activity per week.
+    - **Diabetes**: A condition characterized by high blood sugar levels.
+    - **Hypertension**: Also known as high blood pressure.
+    - **Liver Function Test**: Refers to common liver enzyme tests like Alanine Aminotransferase (ALT) or Aspartate Aminotransferase (AST). Units are typically in U/L. Higher values can indicate liver stress or damage.
     """)
 
 # Main logic to switch between pages
